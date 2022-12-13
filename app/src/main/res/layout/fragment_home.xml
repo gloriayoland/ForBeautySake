@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".nav_fragment.HomeFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFEBEB"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="30dp"
+            android:background="#FFEBEB"
+            android:layout_weight="10"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <Button
+                android:id="@+id/Makeup"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/cardview_dark_background"
+                android:drawableRight="@drawable/makeupam"
+                android:paddingRight="50dp"
+                android:paddingLeft="25dp"
+                android:text="Make Up"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="25dp"></RelativeLayout>
+
+            <Button
+                android:id="@+id/Skincare"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/cardview_dark_background"
+                android:drawableRight="@drawable/skincare"
+                android:paddingRight="50dp"
+                android:paddingLeft="25dp"
+                android:text="Skincare"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="25dp"></RelativeLayout>
+
+            <Button
+                android:id="@+id/bodyCare"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:backgroundTint="#FFFFFF"
+                android:textColor="@color/cardview_dark_background"
+                android:drawableRight="@drawable/bodycare"
+                android:paddingRight="50dp"
+                android:paddingLeft="25dp"
+                android:text="Body Care"
+                android:textStyle="bold" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="25dp"></RelativeLayout>
+
+            <Button
+                android:id="@+id/beautyTools"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:backgroundTint="#FFFFFF"
+                android:drawableRight="@drawable/beautytools"
+                android:paddingLeft="44dp"
+                android:paddingRight="40dp"
+                android:text="Beauty Tools"
+                android:textColor="@color/cardview_dark_background"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="15dp"
+            android:layout_weight="1"
+            android:background="@drawable/bg_gradasi"
+            android:backgroundTint="#FFFF"
+            android:layout_marginTop="45dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:textStyle="bold"
+                android:textSize="30dp"
+                android:text="About Us"
+                android:textAlignment="center"
+                android:textColor="#A01862"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="25dp"></RelativeLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="250dp"
+                android:layout_margin="1dp"
+                android:src="@drawable/fbs_aboutus"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="25dp"></RelativeLayout>
+
+            <TextView
+                android:padding="20dp"
+                android:textStyle="bold"
+                android:background="@drawable/form"
+                android:backgroundTint="#FFEBEB"
+                android:text="Sebuah platform untuk memudahkan user menemukan dan mengetahui produk make up, skincare, dan body care yang sesuai dengan kebutuhan dan kriteria produk yang mereka inginkan dengan mudah. Selain itu user bisa menuliskan review produk yang bisa dibaca oleh semua orang dan saling sharing mengenai banyak produk."
+                android:layout_width="wrap_content"
+                android:textAlignment="center"
+                android:layout_height="wrap_content" />
+
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
