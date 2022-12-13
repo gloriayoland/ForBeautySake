@@ -199,9 +199,9 @@ public class Register extends AppCompatActivity {
             void storeUserData(FirebaseUser user, String fullname, String username, String password, String email){
                 String uid = user.getUid();
 
-                usersRef = FirebaseDatabase.getInstance().getReference("users");
+                usersRef = FirebaseDatabase.getInstance().getReference("table_users");
 
-                userModel helper = new userModel(fullname, email, username, password);
+                userModel helper = new userModel(uid, fullname, email, username, password);
 
                 usersRef.child(uid).setValue(helper);
 

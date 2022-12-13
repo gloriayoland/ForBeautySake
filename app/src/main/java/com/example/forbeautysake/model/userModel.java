@@ -6,22 +6,26 @@ import android.os.Parcelable;
 public class userModel implements Parcelable {
 
     //define variables
-    int row_idUser;
+    String row_idUser;
     String row_fullname;
     String row_email;
     String row_username;
     String row_password;
 
     //constructor for user model class
-    public userModel(String row_fullname, String row_email, String row_username, String row_password) {
+    public userModel(String row_idUser, String row_fullname, String row_email, String row_username, String row_password) {
+        this.row_idUser = row_idUser;
         this.row_fullname = row_fullname;
         this.row_email = row_email;
         this.row_username = row_username;
         this.row_password = row_password;
     }
 
+    public userModel() {
+    }
+
     protected userModel(Parcel in) {
-        row_idUser = in.readInt();
+        row_idUser = in.readString();
         row_fullname = in.readString();
         row_email = in.readString();
         row_username = in.readString();
@@ -41,11 +45,11 @@ public class userModel implements Parcelable {
         }
     };
 
-    public int getRow_idUser() {
+    public String getRow_idUser() {
         return row_idUser;
     }
 
-    public void setRow_idUser(int row_idUser) {
+    public void setRow_idUser(String row_idUser) {
         this.row_idUser = row_idUser;
     }
 
@@ -88,7 +92,7 @@ public class userModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(row_idUser);
+        parcel.writeString(row_idUser);
         parcel.writeString(row_fullname);
         parcel.writeString(row_email);
         parcel.writeString(row_username);

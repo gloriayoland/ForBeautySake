@@ -11,10 +11,7 @@
         android:roundIcon="@mipmap/fbs_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".AdminEditPromo"></activity>
-        <activity android:name=".AdminAddPromo" />
-        <activity android:name=".AdminReviewByCategory" />
-        <activity android:name=".AdminDashboard" />
+        <activity android:name=".DashboardAdmin"></activity>
         <activity android:name=".ReviewByCategory" />
         <activity android:name=".EditReview" />
         <activity android:name=".NewReview" />

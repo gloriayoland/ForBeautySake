@@ -45,24 +45,24 @@ public class NewReview extends AppCompatActivity implements AdapterView.OnItemSe
 
     Spinner category;
 
-    public String username;
-
-    //SharedPreferences sp;
-    //FirebaseDatabase db;
+    DatabaseReference db;
     private FirebaseAuth mAuth;
-    //DBHelper dbHelper;
-
-    // define the name of shared preferences and key
 
     //define variables
     String name, categorySelected;
-
+    String username = "userdefault";
     Date currentDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_review);
+
+        //initiate DBHelper class
+        db = FirebaseDatabase.getInstance().getReference("table_review");
+
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
         //get current date
         currentDate = new Date();
@@ -85,9 +85,7 @@ public class NewReview extends AppCompatActivity implements AdapterView.OnItemSe
         category.setAdapter(adapter);
         category.setOnItemSelectedListener(this);
 
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
+        //set on click listener for cancel button
         cancelReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,39 +97,49 @@ public class NewReview extends AppCompatActivity implements AdapterView.OnItemSe
         postReview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String reviewContent = reviewDet.getText().toString();
-                String product_Name = productName.getText().toString();
-                String product_Price = productPrice.getText().toString();
+                String storyContent = reviewDet.getText().toString();
+                String productname = productName.getText().toString();
+                String productprice = productPrice.getText().toString();
 
-
-                if(!reviewContent.isEmpty()){
-                    storeReviewtoDB(product_Name, categorySelected, product_Price, reviewContent, formattedDate, currentUser);
+                if(!storyContent.isEmpty()){
+                    storeReviewtoDB(productname, categorySelected, productprice,
+                            storyContent, formattedDate, username, currentUser);
 
                     Toast.makeText(NewReview.this, "Review Posted", Toast.LENGTH_SHORT).show();
                     //after review has posted, it will go back to the page before
                     finish();
                 }else{
-                    Toast.makeText(NewReview.this, "You cannot post an empty Review!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(NewReview.this, "You cannot post an empty review!", Toast.LENGTH_SHORT).show();
                     reviewDet.setError("This cannot be empty!");
                 }
-
-
-
             }
         });
     }
 
-    void storeReviewtoDB(String productName, String category, String productPrice, String reviewDet, String date, FirebaseUser user){
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        categorySelected = parent.getItemAtPosition(position).toString();
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
+
+    void storeReviewtoDB(String row_namaProduk, String row_category, String row_hargaProduk,
+                        String row_isiReview, String row_tanggal, String row_username, FirebaseUser user){
         String userid = user.getUid();
         FirebaseDatabase rootNode = FirebaseDatabase.getInstance();
-        DatabaseReference reference = rootNode.getReference("stories");
+        DatabaseReference reference = rootNode.getReference("table_review");
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("users").child(userid);
-        ref.child("username").addValueEventListener(new ValueEventListener() {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("table_users").child(userid);
+        ref.child("row_username").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 String usernameFromDB = snapshot.getValue().toString();
-                reviewModel helper = new reviewModel (productName, category, productPrice, reviewDet, date, userid, usernameFromDB);
+                reviewModel helper = new reviewModel (row_namaProduk, row_category, row_hargaProduk,
+                        row_isiReview, row_tanggal, usernameFromDB, userid);
                 reference.push().setValue(helper);
             }
 
@@ -162,14 +170,4 @@ public class NewReview extends AppCompatActivity implements AdapterView.OnItemSe
         });
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        categorySelected = parent.getItemAtPosition(position).toString();
-
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
 }

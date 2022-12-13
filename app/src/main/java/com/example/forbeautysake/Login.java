@@ -113,7 +113,7 @@ public class Login extends AppCompatActivity {
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         if (matcher.matches()){
                                             Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT) .show();
-                                            startActivity(new Intent(Login.this, AdminDashboard.class));
+                                            startActivity(new Intent(Login.this, DashboardAdmin.class));
                                         }
                                         else{
                                             Toast.makeText(Login.this, "Login Successful", Toast.LENGTH_SHORT) .show();
@@ -207,7 +207,7 @@ public class Login extends AppCompatActivity {
                 dialog.cancel();
             }
         });
-        AlertDialog alert = builder.create();
-        alert.show();
+//        AlertDialog alert = builder.create();
+//        alert.show();
     }
 }

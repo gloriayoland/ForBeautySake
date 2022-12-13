@@ -1,8 +1,10 @@
 package com.example.forbeautysake.feed_fragment;
 
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +16,18 @@ import android.widget.Toast;
 
 import com.example.forbeautysake.Adapter.RVAdapter;
 import com.example.forbeautysake.R;
+import com.example.forbeautysake.model.reviewModel;
 import com.example.forbeautysake.utils.DBHelper;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class PublicReviewFragment extends Fragment {
 
@@ -33,8 +44,16 @@ public class PublicReviewFragment extends Fragment {
     ArrayList<String> review_date;
     ArrayList<String> product_category;
 
+    ArrayList <reviewModel> listReview;
+    DatabaseReference db;
+    View myFragment;
+
     public PublicReviewFragment() {
         // Required empty public constructor
+    }
+
+    public static PublicReviewFragment getInstance() {
+        return new PublicReviewFragment();
     }
 
     @Override
@@ -47,7 +66,7 @@ public class PublicReviewFragment extends Fragment {
         RV_review = myFrag.findViewById(R.id.rv_review);
 
         //initiate DBHelper class
-        dbHelper = new DBHelper(getContext());
+        //dbHelper = new DBHelper(getContext());
 
         //make array list for each content
         product_name = new ArrayList<>();
@@ -57,15 +76,63 @@ public class PublicReviewFragment extends Fragment {
         review_date = new ArrayList<>();
         product_category = new ArrayList<>();
 
-        storeDataInArray();
+        //storeDataInArray();
+
+        listReview = new ArrayList<>();
+        db = FirebaseDatabase.getInstance().getReference("table_review");
 
         //set adapter
-        adapter = new RVAdapter(getContext(),product_name, product_category, product_price,
-                review_detail , review_date, username);
+        adapter = new RVAdapter(getContext(), listReview);
         RV_review.setAdapter(adapter);
         RV_review.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        displayData();
+
         return myFrag;
+    }
+
+    void displayData(){
+
+        db.addValueEventListener(new ValueEventListener() {
+                                           @Override
+                                           public void onDataChange(@NonNull @NotNull DataSnapshot snapshot){
+                                               if (snapshot.hasChildren()){
+                                                   //noStoriesLabel.setVisibility(View.GONE);
+                                                   RV_review.setVisibility(View.VISIBLE);
+                                                   listReview.clear();
+                                                   for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                                       reviewModel helper = dataSnapshot.getValue(reviewModel.class);
+                                                       helper.setKey(dataSnapshot.getKey());
+                                                       listReview.add(helper);
+
+                                                   }
+                                               }else {
+                                                   //noStoriesLabel.setVisibility(View.VISIBLE);
+                                                   RV_review.setVisibility(View.GONE);
+                                               }
+                                               Collections.reverse(listReview);
+                                               adapter.notifyDataSetChanged();
+                                           }
+
+                                           @Override
+                                           public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                           }
+                                       }
+        );
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (getFragmentManager() != null) {
+            getFragmentManager()
+                    .beginTransaction()
+                    .detach(this)
+                    .attach(this)
+                    .commit();
+        }
     }
 
     public void storeDataInArray(){

@@ -24,7 +24,14 @@ import com.example.forbeautysake.R;
 import com.example.forbeautysake.Register;
 import com.example.forbeautysake.utils.DBHelper;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -40,13 +47,9 @@ public class ProfileFragment extends Fragment{
 
     Context context;
     View myFragment;
-    DBHelper db;
+    DatabaseReference db;
 
-    SharedPreferences sp;
-
-    // define the name of shared preferences and key
-    String SP_NAME = "mypref";
-    String KEY_UNAME = "username";
+    private FirebaseAuth mAuth;
 
     //make array list for user data
     ArrayList<String> userData = new ArrayList();
@@ -70,6 +73,10 @@ public class ProfileFragment extends Fragment{
         });
     }
 
+    public static ProfileFragment getInstance() {
+        return new ProfileFragment();
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -84,14 +91,10 @@ public class ProfileFragment extends Fragment{
         bigFullname = myFragment.findViewById(R.id.bigFullname);
         bigUsername = myFragment.findViewById(R.id.bigUsername);
 
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        //get shared preferences
-        sp = getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
-
-        //check availability of sp
-        final String name = sp.getString(KEY_UNAME, null);
-
-        displayProfile(name);
+        showUserData(currentUser);
 
         // find components by id according to the defined variable
         updateProfile = myFragment.findViewById(R.id.btn_update);
@@ -100,9 +103,12 @@ public class ProfileFragment extends Fragment{
         updateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                updateProfile(name, fullname.getEditText().getText().toString(),
-                        email.getEditText().getText().toString(),
-                        password.getEditText().getText().toString());
+                if(validateFullname() && validateUsername()){
+                    updateProfileData(currentUser);
+                    Toast.makeText(getContext(), "Profile updated!", Toast.LENGTH_SHORT).show();
+                    //after review has posted, it will go back to the page before
+
+                }
 
             }
         });
@@ -114,9 +120,7 @@ public class ProfileFragment extends Fragment{
         logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SharedPreferences.Editor editor = sp.edit();
-                editor.clear();
-                editor.commit();
+                FirebaseAuth.getInstance().signOut();
 
                 //make toast for displays a text that has successfully logged out
                 Toast.makeText(getContext(), "Logged Out", Toast.LENGTH_SHORT).show();
@@ -129,42 +133,95 @@ public class ProfileFragment extends Fragment{
         return myFragment;
     }
 
-    public void displayProfile(String Username){
-        //get data from database
-        db = new DBHelper(context);
-        Cursor data = db.fetchAllProfileData(Username);
-        while(data.moveToNext()){
-            //put data to arraylist
-            userData.add(data.getString(0));
-            userData.add(data.getString(1));
-            userData.add(data.getString(2));
-            userData.add(data.getString(3));
-            userData.add(data.getString(4));
-        }
+    private void showUserData(FirebaseUser user){
+        String userid = user.getUid();
+        db = FirebaseDatabase.getInstance().getReference("table_users").child(userid);
+        db.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-        //display data from arraylist
-        fullname.getEditText().setText(userData.get(1));
-        email.getEditText().setText(userData.get(2));
-        username.getEditText().setText(userData.get(3));
-        password.getEditText().setText(userData.get(4));
-        bigFullname.setText(userData.get(1));
-        bigUsername.setText(userData.get(3));
+                String emailFromDB = snapshot.child("row_email").getValue(String.class);
+                String fullnameFromDB = snapshot.child("row_fullname").getValue(String.class);
+                String passwordFromDB = snapshot.child("row_password").getValue(String.class);
+                String usernameFromDB = snapshot.child("row_username").getValue(String.class);
+
+                fullname.getEditText().setText(fullnameFromDB);
+                username.getEditText().setText(usernameFromDB);
+                password.getEditText().setText(passwordFromDB);
+                email.getEditText().setText(emailFromDB);
+                bigFullname.setText(fullnameFromDB);
+                bigUsername.setText(usernameFromDB);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+            }
+        });
     }
 
-    public void updateProfile(String usernameSP, String fullname, String email, String password){
-        //update data to database
-        db = new DBHelper(context);
-        //get id user
-        int idUser = db.getIdUser(usernameSP);
+    private void updateProfileData(FirebaseUser user){
+        String userid = user.getUid();
+        String fullnameChanged = fullname.getEditText().getText().toString();
+        String usernameChanged = username.getEditText().getText().toString();
 
-        //update data by id user
-        boolean res = db.updateProfileData(fullname, email, password, String.valueOf(idUser));
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("table_users");
+        ref.child(userid).child("row_fullname").setValue(fullnameChanged);
+        ref.child(userid).child("row_username").setValue(usernameChanged);
 
-        if (res){
+        DatabaseReference storyref = FirebaseDatabase.getInstance().getReference("table_review");
+        Query userData = storyref.orderByChild("row_userid").equalTo(userid);
 
-            // make toast for displays a text that has successfully updated profile
-            Toast.makeText(getContext(), "Profile Updated", Toast.LENGTH_SHORT).show();
-        }
+        userData.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+
+                    String keyStory = dataSnapshot.getKey();
+                    storyref.child(keyStory).child("row_username").setValue(usernameChanged);
+
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
 
+    private Boolean validateUsername(){
+        String val = username.getEditText().getText().toString();
+        String noWhiteSpace = "\\A\\w{4,20}\\z";
+        Boolean boolVal = false;
+
+        if(val.isEmpty()){
+            username.setError("Field cannot be empty!");
+        }else if(val.length() >= 15){
+            username.setError("Username too long!");
+        }else if(!val.matches(noWhiteSpace)){
+            username.setError("White space are not allowed!");
+        }else{
+            username.setError(null);
+            username.setErrorEnabled(false);
+            boolVal = true;
+        }
+
+        return boolVal;
+    }
+
+    private Boolean validateFullname(){
+        String val = fullname.getEditText().getText().toString();
+        Boolean boolVal = false;
+
+        if(val.isEmpty()){
+            fullname.setError("Field cannot be empty!");
+        }else{
+            fullname.setError(null);
+            fullname.setErrorEnabled(false);
+            boolVal = true;
+        }
+
+        return boolVal;
+    }
 }

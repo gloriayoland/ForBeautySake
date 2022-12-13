@@ -9,6 +9,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.forbeautysake.model.reviewModel;
+import com.example.forbeautysake.model.userModel;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,8 +26,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVviewHolder> {
     //define variables
     private Context context;
     private ArrayList product_name, product_category, product_price, review_detail, review_date, username;
+    ArrayList <reviewModel> listReview;
 
     //constructor
+    public RVAdapter(Context context, ArrayList<reviewModel> listReview) {
+        this.context = context;
+        this.listReview = listReview;
+
+    }
+
     public RVAdapter(Context context, ArrayList product_name, ArrayList product_category,
                      ArrayList product_price, ArrayList review_detail, ArrayList review_date,
                      ArrayList username){
@@ -72,18 +81,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.RVviewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RVviewHolder holder, int position) {
 
+        reviewModel helper = listReview.get(position);
+
         //set text
-        holder.txt_productName.setText(String.valueOf(product_name.get(position)));
-        holder.txt_productCategory.setText(String.valueOf(product_category.get(position)));
-        holder.txt_productPrice.setText(String.valueOf(product_price.get(position)));
-        holder.txt_reviewDet.setText(String.valueOf(review_detail.get(position)));
-        holder.txt_reviewDate.setText(String.valueOf(review_date.get(position)));
-        holder.txt_username.setText(String.valueOf(username.get(position)));
+        holder.txt_productName.setText(helper.getRow_namaProduk());
+        holder.txt_productCategory.setText(helper.getRow_category());
+        holder.txt_productPrice.setText(helper.getRow_hargaProduk());
+        holder.txt_reviewDet.setText(helper.getRow_isiReview());
+        holder.txt_reviewDate.setText(helper.getRow_tanggal());
+        holder.txt_username.setText(helper.getRow_username());
     }
 
     @Override
     public int getItemCount() {
-        return product_name.size();
+        return listReview.size();
     }
 
 
