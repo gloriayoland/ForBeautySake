@@ -21,6 +21,7 @@ import com.example.forbeautysake.model.reviewModel;
 import com.example.forbeautysake.model.userModel;
 import com.example.forbeautysake.utils.DBHelper;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -115,8 +116,8 @@ public class RVAdapterMyRev extends RecyclerView.Adapter<RVAdapterMyRev.RVviewHo
                         dialog.cancel();
                     }
                 });
-//                AlertDialog alert = builder.create();
-//                alert.show();
+                AlertDialog alert = builder.create();
+                alert.show();
             }
         });
 
@@ -124,6 +125,11 @@ public class RVAdapterMyRev extends RecyclerView.Adapter<RVAdapterMyRev.RVviewHo
         holder.editRev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FirebaseDatabase db = FirebaseDatabase.getInstance();
+                DatabaseReference ref = db.getReference("table_review");
+                ref.child(helper.getKey()).setValue(helper);
+                Intent intent = new Intent(v.getContext(), EditReview.class);
+                v.getContext().startActivity(intent);
 //
 //                //get id from database
 //                int id = ref.getIdRev(product_name.get(position), product_category.get(position),

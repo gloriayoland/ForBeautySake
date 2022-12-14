@@ -1,5 +1,6 @@
 package com.example.forbeautysake;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -18,8 +19,22 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.forbeautysake.model.reviewModel;
 import com.example.forbeautysake.nav_fragment.FeedFragment;
 import com.example.forbeautysake.utils.DBHelper;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditReview extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     // define variables
@@ -32,6 +47,12 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
     Spinner category;
 
+    //DatabaseReference db;
+
+    //define variables
+    String id_review, categorySelected;
+
+
     DBHelper dbHelper;
     SharedPreferences sp;
 
@@ -39,13 +60,11 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
     String SP_NAME = "mypref";
     String KEY_REVIEWID = "idRev";
 
-    //define variables
-    String id_review, categorySelected;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_review);
+        reviewModel reviewlist = (reviewModel) getIntent().getSerializableExtra("table_review");
 
         //get shared preferences
         sp = getSharedPreferences(SP_NAME, MODE_PRIVATE);
@@ -55,6 +74,7 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
         //initiate DBHelper class
         dbHelper = new DBHelper(this);
+        //db = FirebaseDatabase.getInstance().getReference("table_review");
 
         // find components by id according to the defined variable
         productName = findViewById(R.id.productName);
@@ -109,7 +129,8 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
         Toast.makeText(this, "Please select the category", Toast.LENGTH_SHORT).show();
     }
 
-    public void updateReview(String idReview, String productName, String productCategory, String productPrice, String reviewDetail) {
+    public void updateReview(String idReview, String productName, String productCategory,
+                             String productPrice, String reviewDetail) {
 
         if (productCategory.equals("Select Product Category")) {
             //alert dialog for select the product category
@@ -145,7 +166,7 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
         }
         return 0;
     }
-
+//
     public String getReview(String id){
         //method to get content of table review based on id
         Cursor res = dbHelper.getReviewbyId(id);

@@ -60,8 +60,8 @@
                 android:id="@+id/fullname"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Full Name"
-                app:boxStrokeColor="#FFDDC2"
-                app:hintTextColor="#9C7F68"
+                app:boxStrokeColor="#8a112b"
+                app:hintTextColor="#83381D"
                 android:textSize="12sp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -85,8 +85,8 @@
                 android:id="@+id/email"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Email"
-                app:boxStrokeColor="#FFDDC2"
-                app:hintTextColor="#DAA67E"
+                app:boxStrokeColor="#8a112b"
+                app:hintTextColor="#83381D"
                 android:textSize="12sp">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -111,8 +111,8 @@
                 android:id="@+id/username"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Username"
-                app:hintTextColor="#9C7F68"
-                app:boxStrokeColor="#FFDDC2"
+                app:hintTextColor="#83381D"
+                app:boxStrokeColor="#8a112b"
                 android:clickable="true">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -139,8 +139,8 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Password"
                 app:passwordToggleEnabled="true"
-                app:boxStrokeColor="#FFDDC2"
-                app:hintTextColor="#9C7F68"
+                app:boxStrokeColor="#8a112b"
+                app:hintTextColor="#83381D"
                 android:textSize="12sp">
 
                 <com.google.android.material.textfield.TextInputEditText
