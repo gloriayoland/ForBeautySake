@@ -3,6 +3,7 @@ package com.example.forbeautysake;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 
@@ -20,7 +21,7 @@ public class AdminDashboard extends AppCompatActivity {
     private ChipNavigationBar chipnav;
     private Fragment fragment = null;
 
-    ImageView addReview;
+    ImageView addPromotion;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +29,16 @@ public class AdminDashboard extends AppCompatActivity {
         setContentView(R.layout.activity_admin_dashboard);
 
         // find components by id according to the defined variable
-        addReview = findViewById(R.id.addRev);
+        addPromotion = findViewById(R.id.addRev);
         chipnav = findViewById(R.id.chipnav);
 
         // set item selected in chipnav which is Home fragment
         chipnav.setItemSelected(R.id.nav_home, true);
         getSupportFragmentManager().beginTransaction().replace(R.id.container_fragment, new HomeFragment()).commit();
+
+        addPromotion.setOnClickListener(v -> {
+            startActivity(new Intent(AdminDashboard.this, AdminAddPromo.class));
+        });
 
         //set on item selected in chipnav to change the page according to the user select
         chipnav.setOnItemSelectedListener(new ChipNavigationBar.OnItemSelectedListener() {
