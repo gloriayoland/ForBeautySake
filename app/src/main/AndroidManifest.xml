@@ -11,6 +11,7 @@
         android:roundIcon="@mipmap/fbs_logo_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".AdminAddCategory"></activity>
         <activity android:name=".ReviewByCategory" />
         <activity android:name=".EditReview" />
         <activity android:name=".NewReview" />
@@ -22,8 +23,8 @@
             android:name=".Login"
             android:label=""
             android:noHistory="true" />
-
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
