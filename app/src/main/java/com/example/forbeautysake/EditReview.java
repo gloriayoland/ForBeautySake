@@ -19,11 +19,8 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.forbeautysake.model.reviewModel;
 import com.example.forbeautysake.nav_fragment.FeedFragment;
 import com.example.forbeautysake.utils.DBHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -32,9 +29,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EditReview extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
     // define variables
@@ -47,34 +41,22 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
     Spinner category;
 
-    //DatabaseReference db;
+    public String username;
+    private FirebaseAuth mAuth;
 
-    //define variables
-    String id_review, categorySelected;
-
-
-    DBHelper dbHelper;
     SharedPreferences sp;
 
     // define the name of shared preferences and key
     String SP_NAME = "mypref";
-    String KEY_REVIEWID = "idRev";
+    String KEY_REVIEWID = "reviewid";
+
+    //define variables
+    String id_review, categorySelected;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_review);
-        reviewModel reviewlist = (reviewModel) getIntent().getSerializableExtra("table_review");
-
-        //get shared preferences
-        sp = getSharedPreferences(SP_NAME, MODE_PRIVATE);
-
-        //check availability of sp
-        id_review = String.valueOf(sp.getInt(KEY_REVIEWID, 0));
-
-        //initiate DBHelper class
-        dbHelper = new DBHelper(this);
-        //db = FirebaseDatabase.getInstance().getReference("table_review");
 
         // find components by id according to the defined variable
         productName = findViewById(R.id.productName);
@@ -86,7 +68,12 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
         category = findViewById(R.id.productCategory);
 
-        categorySelected = getReview(id_review);
+        sp = getSharedPreferences(SP_NAME, MODE_PRIVATE);
+
+        //check availability of sp
+        final String reviewid = sp.getString(KEY_REVIEWID, null);
+
+        categorySelected = "Skincare";
 
         //set adapter
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.productCategory, android.R.layout.simple_spinner_item);
@@ -129,8 +116,7 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
         Toast.makeText(this, "Please select the category", Toast.LENGTH_SHORT).show();
     }
 
-    public void updateReview(String idReview, String productName, String productCategory,
-                             String productPrice, String reviewDetail) {
+    public void updateReview(String idReview, String productName, String productCategory, String productPrice, String reviewDetail) {
 
         if (productCategory.equals("Select Product Category")) {
             //alert dialog for select the product category
@@ -146,7 +132,7 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
                     .show();
         } else {
             //update values of the review to database
-            dbHelper.updateReview(idReview, productName, productCategory, productPrice, reviewDetail);
+            updateReview(idReview, productName, productCategory, productPrice, reviewDetail);
 
             // make toast for display a text that review succesfully updated
             Toast.makeText(EditReview.this, "Review Updated", Toast.LENGTH_SHORT).show();
@@ -166,16 +152,46 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
         }
         return 0;
     }
-//
-    public String getReview(String id){
-        //method to get content of table review based on id
-        Cursor res = dbHelper.getReviewbyId(id);
-        res.moveToNext();
-        productName.setText(res.getString(1));
-        String categorySelected = res.getString(2);
-        productPrice.setText(res.getString(3));
-        reviewDet.setText(res.getString(4));
 
-        return categorySelected;
+    private void showReviewData(String reviewid){
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("table_review");
+        Query userData = ref.orderByChild(reviewid);
+
+        userData.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String productNameFromDB = snapshot.child(reviewid).child("row_namaProduk").getValue(String.class);
+                String categoryFromDB = snapshot.child(reviewid).child("row_category").getValue(String.class);
+                String productPriceFromDB = snapshot.child(reviewid).child("row_hargaProduk").getValue(String.class);
+                String reviewDetFromDB = snapshot.child(reviewid).child("row_isiReview").getValue(String.class);
+
+                productName.setText(productNameFromDB);
+                //ini masih ragu kategori
+                //category.getEditText().setText(categoryFromDB);
+                productPrice.setText(productPriceFromDB);
+                reviewDet.setText(reviewDetFromDB);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    private void updateReviewData (String reviewid){
+
+        String productNameChanged = productName.getText().toString();
+        String categoryChanged = categorySelected;
+        String productPriceChanged = productPrice.getText().toString();
+        String reviewDetChanged = reviewDet.getText().toString();
+
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("table_review");
+        ref.child(reviewid).child("row_namaProduk").setValue(productNameChanged);
+        ref.child(reviewid).child("row_category").setValue(categoryChanged);
+        ref.child(reviewid).child("row_hargaProduk").setValue(productPriceChanged);
+        ref.child(reviewid).child("row_isiReview").setValue(reviewDetChanged);
+
     }
 }
