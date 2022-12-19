@@ -20,6 +20,10 @@ public class promotionModel {
         this.row_promotionLink = row_promotionLink;
     }
 
+    public void setKey(String key) {
+        this.key = key;
+    }
+
     public String getKey() {
         return key;
     }
