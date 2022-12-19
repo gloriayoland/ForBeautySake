@@ -49,8 +49,17 @@ public class Login extends AppCompatActivity {
         if (user != null) {
             String email = user.getEmail();
 
+            String regex = "^(.+)@adminfbs(.+)$";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(email);
+
             Toast.makeText(Login.this, "Hello "+ email, Toast.LENGTH_SHORT) .show();
+
+            if(matcher.matches()) {
+                startActivity(new Intent(Login.this, AdminDashboard.class));
+            } else {
             startActivity(new Intent(Login.this, Dashboard.class));
+            }
         }else{
             Toast.makeText(Login.this, "No Active user", Toast.LENGTH_SHORT) .show();
         }

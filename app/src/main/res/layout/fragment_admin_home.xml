@@ -8,39 +8,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="35dp"
-            android:background="#FFEBEB"
-            android:layout_marginBottom="20dp">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="CHECK THIS OUT!"
-                android:fontFamily="@font/poppins"
-                android:textColor="#8A112B"
-                android:textSize="18sp"/>
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="250dp"
-                android:layout_margin="1dp"
-                android:src="@drawable/fbs_aboutus"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
         android:background="#FFEBEB"
         android:orientation="vertical">
 

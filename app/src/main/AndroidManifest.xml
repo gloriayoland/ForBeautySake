@@ -16,11 +16,14 @@
         <activity android:name=".NewReview" />
         <activity android:name=".Dashboard" />
         <activity android:name=".Register" />
+        <activity android:name=".AdminDashboard" />
         <activity
             android:name=".Login"
             android:label=""
             android:noHistory="true" />
-        <activity android:name=".MainActivity">
+
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
