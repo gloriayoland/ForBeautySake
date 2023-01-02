@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -22,7 +23,8 @@ public class AdminAddPromo extends AppCompatActivity {
 
     EditText promotionName;
     EditText promotionLink;
-    Button postReview;
+    Button postAddPromo;
+    Button cancelAddPromo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +37,20 @@ public class AdminAddPromo extends AppCompatActivity {
         // find components by id according to the defined variable
         promotionName = findViewById(R.id.promotionName);
         promotionLink = findViewById(R.id.promotionLink);
-        postReview = findViewById(R.id.btn_postRev);
+        postAddPromo = findViewById(R.id.btn_postAddPromo);
+        cancelAddPromo = findViewById(R.id.btn_cancelAddPromo);
 
-        postReview.setOnClickListener(v -> {
+        postAddPromo.setOnClickListener(v -> {
             promotionModel promotion = new promotionModel(promotionName.getText().toString(), promotionLink.getText().toString());
             db.push().setValue(promotion);
             finish();
+        });
+
+        cancelAddPromo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
         });
     }
 }

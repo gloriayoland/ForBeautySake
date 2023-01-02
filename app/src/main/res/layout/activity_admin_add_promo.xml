@@ -63,7 +63,7 @@
         android:layout_marginBottom="20dp">
 
         <Button
-            android:id="@+id/btn_cancelRev"
+            android:id="@+id/btn_cancelAddPromo"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:textColor="#FFFFFF"
@@ -74,7 +74,7 @@
             android:fontFamily="@font/poppins_semibold"/>
 
         <Button
-            android:id="@+id/btn_postRev"
+            android:id="@+id/btn_postAddPromo"
             android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
