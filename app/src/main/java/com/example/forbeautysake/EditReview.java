@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -52,6 +53,8 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
     //define variables
     String id_review, categorySelected;
+    private String reviewKey;
+    private ArrayAdapter<CharSequence> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,14 +78,20 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
         categorySelected = "Skincare";
 
+        // get reviewKey from intent
+        Bundle extras = getIntent().getExtras();
+        reviewKey = extras.getString("reviewKey");
+
         //set adapter
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.productCategory, android.R.layout.simple_spinner_item);
+        adapter = ArrayAdapter.createFromResource(this, R.array.productCategory, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         category.setAdapter(adapter);
         category.setOnItemSelectedListener(this);
 
         int p = selectSpinnerItembyValue(category, categorySelected);
         category.setSelection(p);
+
+        showReviewData(reviewKey);
 
         //set on click listener for cancel button
         cancelReview.setOnClickListener(new View.OnClickListener() {
@@ -99,8 +108,7 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
                 String product_name = productName.getText().toString();
                 String product_price = productPrice.getText().toString();
                 String review_detail = reviewDet.getText().toString();
-                updateReview(id_review, product_name, categorySelected, product_price, review_detail);
-                finish();
+                updateReview();
             }
         });
     }
@@ -116,9 +124,9 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
         Toast.makeText(this, "Please select the category", Toast.LENGTH_SHORT).show();
     }
 
-    public void updateReview(String idReview, String productName, String productCategory, String productPrice, String reviewDetail) {
+    public void updateReview() {
 
-        if (productCategory.equals("Select Product Category")) {
+        if (categorySelected.equals("Select Product Category")) {
             //alert dialog for select the product category
             new AlertDialog.Builder(this)
                     .setIcon(R.drawable.ic_warning)
@@ -132,10 +140,10 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
                     .show();
         } else {
             //update values of the review to database
-            updateReview(idReview, productName, productCategory, productPrice, reviewDetail);
-
+            updateReviewData(reviewKey);
             // make toast for display a text that review succesfully updated
             Toast.makeText(EditReview.this, "Review Updated", Toast.LENGTH_SHORT).show();
+            finish();
         }
 
     }
@@ -167,8 +175,7 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
                 String reviewDetFromDB = snapshot.child(reviewid).child("row_isiReview").getValue(String.class);
 
                 productName.setText(productNameFromDB);
-                //ini masih ragu kategori
-                //category.getEditText().setText(categoryFromDB);
+                category.setSelection(adapter.getPosition(categoryFromDB));
                 productPrice.setText(productPriceFromDB);
                 reviewDet.setText(reviewDetFromDB);
             }

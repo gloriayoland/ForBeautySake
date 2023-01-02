@@ -129,6 +129,7 @@ public class RVAdapterMyRev extends RecyclerView.Adapter<RVAdapterMyRev.RVviewHo
                 DatabaseReference ref = db.getReference("table_review");
                 ref.child(helper.getKey()).setValue(helper);
                 Intent intent = new Intent(v.getContext(), EditReview.class);
+                intent.putExtra("reviewKey", helper.getKey());
                 v.getContext().startActivity(intent);
 //
 //                //get id from database
