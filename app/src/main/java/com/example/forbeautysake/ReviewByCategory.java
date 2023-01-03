@@ -70,6 +70,7 @@ public class ReviewByCategory extends AppCompatActivity {
 
         //run method in line 75 to store data in array
         //storeDataInArray(category);
+        listReview = new ArrayList<>();
 
         displayData(storyData);
 
