@@ -85,7 +85,18 @@ public class AdminEditPromo extends AppCompatActivity{
             public void onClick(View v) {
                 String promotion_name = promotionName.getText().toString();
                 String promotion_link = promotionLink.getText().toString();
-                updatePromo();
+
+                if (!promotion_name.isEmpty() & !promotion_link.isEmpty()){
+                    updatePromo();
+                }else if (promotion_name.isEmpty() & promotion_link.isEmpty()){
+                    Toast.makeText(AdminEditPromo.this, "You cannot update an empty promotion!", Toast.LENGTH_SHORT).show();
+                }else if (promotion_name.isEmpty()){
+                    promotionName.setError("This cannot be empty!");
+                }
+                else if (promotion_link.isEmpty()){
+                    promotionLink.setError("This cannot be empty!");
+                }
+
             }
         });
     }
