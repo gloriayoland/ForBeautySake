@@ -111,10 +111,22 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
 
                 if (!product_name.isEmpty() & !product_price.isEmpty() & !review_detail.isEmpty()){
                     updateReview();
-                }else{
+                }else if (product_name.isEmpty() & product_price.isEmpty() & review_detail.isEmpty()){
                     Toast.makeText(EditReview.this, "You cannot update an empty review!", Toast.LENGTH_SHORT).show();
+                }else if (product_name.isEmpty() & product_price.isEmpty()){
                     productName.setError("This cannot be empty!");
                     productPrice.setError("This cannot be empty!");
+                }else if (product_name.isEmpty() & review_detail.isEmpty()){
+                    productName.setError("This cannot be empty!");
+                    reviewDet.setError("This cannot be empty");
+                }else if (product_price.isEmpty() & review_detail.isEmpty()){
+                    productPrice.setError("This cannot be empty!");
+                    reviewDet.setError("This cannot be empty");
+                }else if (product_name.isEmpty()){
+                    productName.setError("This cannot be empty!");
+                }else if (product_price.isEmpty()){
+                    productPrice.setError("This cannot be empty!");
+                }else if (review_detail.isEmpty()){
                     reviewDet.setError("This cannot be empty");
                 }
             }
