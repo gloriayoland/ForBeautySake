@@ -184,7 +184,7 @@ public class Register extends AppCompatActivity {
                 }else if(val.length() > 15){
                     pass.setError("Password cannot be more than 15 characters!");
                 }else if(val.length() < 8){
-                    pass.setError("Username cannot be less than 8 characters!");
+                    pass.setError("Password cannot be less than 8 characters!");
                 }else if(!val.matches(noWhiteSpace)){
                     pass.setError("White space are not allowed!");
                 }else{
