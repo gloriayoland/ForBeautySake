@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.forbeautysake.model.reviewModel;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,10 +41,22 @@ public class AdminAddPromo extends AppCompatActivity {
         postAddPromo = findViewById(R.id.btn_postAddPromo);
         cancelAddPromo = findViewById(R.id.btn_cancelAddPromo);
 
-        postAddPromo.setOnClickListener(v -> {
-            promotionModel promotion = new promotionModel(promotionName.getText().toString(), promotionLink.getText().toString());
-            db.push().setValue(promotion);
-            finish();
+        postAddPromo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                promotionModel promotion = new promotionModel();
+                String promotionname = promotionName.getText().toString();
+                String promotionlink = promotionLink.getText().toString();
+
+                if (!promotionname.isEmpty() & !promotionlink.isEmpty()){
+                    db.push().setValue(promotion);
+                    finish();
+                }else{
+                    Toast.makeText(AdminAddPromo.this, "You cannot post an empty promotion!", Toast.LENGTH_SHORT).show();
+                    promotionName.setError("This cannot be empty!");
+                    promotionLink.setError("This cannot be empty!");
+                }
+            }
         });
 
         cancelAddPromo.setOnClickListener(new View.OnClickListener() {
