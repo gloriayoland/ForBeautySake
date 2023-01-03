@@ -108,7 +108,15 @@ public class EditReview extends AppCompatActivity implements AdapterView.OnItemS
                 String product_name = productName.getText().toString();
                 String product_price = productPrice.getText().toString();
                 String review_detail = reviewDet.getText().toString();
-                updateReview();
+
+                if (!product_name.isEmpty() & !product_price.isEmpty() & !review_detail.isEmpty()){
+                    updateReview();
+                }else{
+                    Toast.makeText(EditReview.this, "You cannot update an empty review!", Toast.LENGTH_SHORT).show();
+                    productName.setError("This cannot be empty!");
+                    productPrice.setError("This cannot be empty!");
+                    reviewDet.setError("This cannot be empty");
+                }
             }
         });
     }
