@@ -103,7 +103,7 @@ public class ProfileFragment extends Fragment{
         updateProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(validateFullname() && validateUsername()){
+                if(validateFullname() && validateUsername() && validateEmail() && validatePassword()){
                     updateProfileData(currentUser);
                     Toast.makeText(getContext(), "Profile updated!", Toast.LENGTH_SHORT).show();
                     //after review has posted, it will go back to the page before
@@ -163,10 +163,14 @@ public class ProfileFragment extends Fragment{
         String userid = user.getUid();
         String fullnameChanged = fullname.getEditText().getText().toString();
         String usernameChanged = username.getEditText().getText().toString();
+        String emailChanged = email.getEditText().getText().toString();
+        String passwordChanged = password.getEditText().getText().toString();
 
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("table_users");
         ref.child(userid).child("row_fullname").setValue(fullnameChanged);
         ref.child(userid).child("row_username").setValue(usernameChanged);
+        ref.child(userid).child("row_email").setValue(emailChanged);
+        ref.child(userid).child("row_password").setValue(passwordChanged);
 
         DatabaseReference storyref = FirebaseDatabase.getInstance().getReference("table_review");
         Query userData = storyref.orderByChild("row_userid").equalTo(userid);
@@ -219,6 +223,43 @@ public class ProfileFragment extends Fragment{
         }else{
             fullname.setError(null);
             fullname.setErrorEnabled(false);
+            boolVal = true;
+        }
+
+        return boolVal;
+    }
+
+    private Boolean validateEmail(){
+        String val = email.getEditText().getText().toString();
+        Boolean boolVal = false;
+
+        if(val.isEmpty()){
+            email.setError("Field cannot be empty!");
+        }else{
+            email.setError(null);
+            email.setErrorEnabled(false);
+            boolVal = true;
+        }
+
+        return boolVal;
+    }
+
+    private Boolean validatePassword(){
+        String val = password.getEditText().getText().toString();
+        String noWhiteSpace = "\\A\\w{4,20}\\z";
+        Boolean boolVal = false;
+
+        if(val.isEmpty()){
+            password.setError("Field cannot be empty!");
+        }else if(val.length() > 15){
+            password.setError("Password cannot be more than 15 characters!");
+        }else if(val.length() < 8){
+            password.setError("Password cannot be less than 8 characters!");
+        }else if(!val.matches(noWhiteSpace)){
+            password.setError("White space are not allowed!");
+        }else{
+            password.setError(null);
+            password.setErrorEnabled(false);
             boolVal = true;
         }
 
