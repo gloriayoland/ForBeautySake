@@ -46,7 +46,7 @@ public class PromotionRVAdapter extends RecyclerView.Adapter<PromotionRVAdapter.
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.rv_promotion_item, parent, false);
 
-        return new PromotionAdapterViewHolder(view);
+        return new PromotionRVAdapter.PromotionAdapterViewHolder(view);
     }
 
 
@@ -62,6 +62,7 @@ public class PromotionRVAdapter extends RecyclerView.Adapter<PromotionRVAdapter.
 
     @Override
     public int getItemCount() {
+
         return promotionList.size();
     }
 

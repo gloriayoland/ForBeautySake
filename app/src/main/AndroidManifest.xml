@@ -19,6 +19,7 @@
         <activity android:name=".Register" />
         <activity android:name=".AdminDashboard" />
         <activity android:name=".AdminAddPromo" />
+        <activity android:name=".AdminEditPromo" />
         <activity
             android:name=".Login"
             android:label=""

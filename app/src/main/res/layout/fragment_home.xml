@@ -28,23 +28,6 @@
             android:layout_height="match_parent">
 
             <Button
-                android:id="@+id/Promotion"
-                android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:backgroundTint="#FFFFFF"
-                android:textColor="@color/cardview_dark_background"
-                android:drawableRight="@drawable/fbs_promo"
-                android:paddingRight="50dp"
-                android:paddingLeft="25dp"
-                android:text="Check This Out!!"
-                android:textStyle="bold" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingBottom="25dp"></RelativeLayout>
-
-            <Button
                 android:id="@+id/Makeup"
                 android:layout_width="match_parent"
                 android:layout_height="120dp"

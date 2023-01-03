@@ -1,66 +1,194 @@
 package com.example.forbeautysake.nav_fragment;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager.widget.ViewPager;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.example.forbeautysake.Adapter.AdminPromotionRVAdapter;
+import com.example.forbeautysake.Adapter.RVAdapter;
+import com.example.forbeautysake.Adapter.SectionPagerAdapter;
 import com.example.forbeautysake.R;
+import com.example.forbeautysake.ReviewByCategory;
+import com.example.forbeautysake.feed_fragment.MyReviewFragment;
+import com.example.forbeautysake.feed_fragment.PublicReviewFragment;
+import com.example.forbeautysake.model.promotionModel;
+import com.example.forbeautysake.model.reviewModel;
+import com.example.forbeautysake.utils.DBHelper;
+import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link AdminHomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import static android.content.Context.MODE_PRIVATE;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class AdminHomeFragment extends Fragment {
+    // define variables
+    Button Makeup, Skincare, bodyCare, beautyTools;
+    RecyclerView rvPromotion;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    AdminPromotionRVAdapter promotionAdminAdapter;
+    ArrayList<promotionModel> promotionList;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-    public AdminHomeFragment() {
-        // Required empty public constructor
+
+    View myFragment;
+
+    SharedPreferences sp;
+
+    // define the name of shared preferences and key
+    String SP_NAME = "mypref";
+    String KEY_CATEGORY = "category";
+
+    DatabaseReference db;
+
+
+    public AdminHomeFragment (){
+
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AdminHomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static AdminHomeFragment newInstance(String param1, String param2) {
-        AdminHomeFragment fragment = new AdminHomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+    public static AdminHomeFragment getInstance(){
+        return new AdminHomeFragment();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_home, container, false);
+        myFragment = inflater.inflate(R.layout.fragment_admin_home, container, false);
+
+        // find components by id according to the defined variable
+        Makeup = myFragment.findViewById(R.id.Makeup);
+        Skincare = myFragment.findViewById(R.id.Skincare);
+        bodyCare = myFragment.findViewById(R.id.bodyCare);
+        beautyTools = myFragment.findViewById(R.id.beautyTools);
+        rvPromotion = myFragment.findViewById(R.id.rv_promotionAdmin);
+
+        //get shared preferences
+        sp = getContext().getSharedPreferences(SP_NAME, MODE_PRIVATE);
+
+        //set on click listener make up category button
+        Makeup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sp.edit();
+                String Category = "Make Up";
+                editor.putString(KEY_CATEGORY, Category );
+                editor.commit();
+                Intent i = new Intent(getContext(), ReviewByCategory.class);
+                startActivity(i);
+
+            }
+        });
+
+        //set on click listener skincare category button
+        Skincare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sp.edit();
+                String Category = "Skin Care";
+                editor.putString(KEY_CATEGORY, Category );
+                editor.commit();
+                Intent i = new Intent(getContext(), ReviewByCategory.class);
+                startActivity(i);
+
+            }
+        });
+
+        //set on click listener body care category button
+        bodyCare.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sp.edit();
+                String Category = "Body Care";
+                editor.putString(KEY_CATEGORY, Category );
+                editor.commit();
+                Intent i = new Intent(getContext(), ReviewByCategory.class);
+                startActivity(i);
+
+            }
+        });
+
+        //set on click listener beauty tools category button
+        beautyTools.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences.Editor editor = sp.edit();
+                String Category = "Beauty Tools";
+                editor.putString(KEY_CATEGORY, Category );
+                editor.commit();
+                Intent i = new Intent(getContext(), ReviewByCategory.class);
+                startActivity(i);
+
+            }
+        });
+
+        promotionList = new ArrayList<>();
+        db = FirebaseDatabase.getInstance().getReference("table_promotion");
+
+
+        setupPromotionRv();
+        displayData();
+
+        return myFragment;
     }
+
+    private void setupPromotionRv() {
+        promotionAdminAdapter = new AdminPromotionRVAdapter(getContext(), promotionList);
+        rvPromotion.setAdapter(promotionAdminAdapter);
+        rvPromotion.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
+
+    void displayData(){
+
+        db.addValueEventListener(new ValueEventListener() {
+                                     @Override
+                                     public void onDataChange(@NonNull @NotNull DataSnapshot snapshot){
+                                         if (snapshot.hasChildren()){
+                                             //noStoriesLabel.setVisibility(View.GONE);
+                                             rvPromotion.setVisibility(View.VISIBLE);
+                                             promotionList.clear();
+                                             for (DataSnapshot dataSnapshot:snapshot.getChildren()){
+                                                 promotionModel helper = dataSnapshot.getValue(promotionModel.class);
+                                                 helper.setKey(dataSnapshot.getKey());
+                                                 promotionList.add(helper);
+
+                                             }
+                                         }else {
+                                             //noStoriesLabel.setVisibility(View.VISIBLE);
+                                             rvPromotion.setVisibility(View.GONE);
+                                         }
+                                         Collections.reverse(promotionList);
+                                         promotionAdminAdapter.notifyDataSetChanged();
+                                     }
+
+                                     @Override
+                                     public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+                                     }
+                                 }
+        );
+    }
+
+
+
 }

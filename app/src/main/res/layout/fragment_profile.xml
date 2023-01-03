@@ -112,8 +112,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:hint="Username"
                 app:hintTextColor="#83381D"
-                app:boxStrokeColor="#8a112b"
-                android:clickable="true">
+                app:boxStrokeColor="#8a112b">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -122,8 +121,6 @@
                     android:fontFamily="@font/poppins"
                     android:padding="10dp"
                     android:text="User Username"
-                    android:focusable="false"
-                    android:clickable="true"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
