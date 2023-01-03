@@ -44,18 +44,24 @@ public class AdminAddPromo extends AppCompatActivity {
         postAddPromo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                promotionModel promotion = new promotionModel();
                 String promotionname = promotionName.getText().toString();
                 String promotionlink = promotionLink.getText().toString();
 
-                if (!promotionname.isEmpty() & !promotionlink.isEmpty()){
-                    db.push().setValue(promotion);
-                    finish();
-                }else{
+                if (promotionname.isEmpty() & promotionlink.isEmpty()){
                     Toast.makeText(AdminAddPromo.this, "You cannot post an empty promotion!", Toast.LENGTH_SHORT).show();
+                }else if (promotionname.isEmpty()){
                     promotionName.setError("This cannot be empty!");
+                }else if (promotionlink.isEmpty()){
                     promotionLink.setError("This cannot be empty!");
+                }else if (!promotionname.isEmpty() & !promotionlink.isEmpty()){
+                    addPromo();
                 }
+            }
+
+            private void addPromo() {
+                promotionModel promotion = new promotionModel(promotionName.getText().toString(), promotionLink.getText().toString());
+                db.push().setValue(promotion);
+                finish();
             }
         });
 
@@ -66,4 +72,5 @@ public class AdminAddPromo extends AppCompatActivity {
             }
         });
     }
+
 }
