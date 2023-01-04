@@ -101,16 +101,30 @@ public class NewReview extends AppCompatActivity implements AdapterView.OnItemSe
                 String productname = productName.getText().toString();
                 String productprice = productPrice.getText().toString();
 
-                if(!storyContent.isEmpty()){
+                if (!storyContent.isEmpty() & !productname.isEmpty() & !productprice.isEmpty()){
                     storeReviewtoDB(productname, categorySelected, productprice,
                             storyContent, formattedDate, username, currentUser);
 
                     Toast.makeText(NewReview.this, "Review Posted", Toast.LENGTH_SHORT).show();
                     //after review has posted, it will go back to the page before
                     finish();
-                }else{
+                }else if (productname.isEmpty() & productprice.isEmpty() & storyContent.isEmpty()){
                     Toast.makeText(NewReview.this, "You cannot post an empty review!", Toast.LENGTH_SHORT).show();
-                    reviewDet.setError("This cannot be empty!");
+                }else if (productname.isEmpty() & productprice.isEmpty()){
+                    productName.setError("This cannot be empty!");
+                    productPrice.setError("This cannot be empty!");
+                }else if (productname.isEmpty() & storyContent.isEmpty()){
+                    productName.setError("This cannot be empty!");
+                    reviewDet.setError("This cannot be empty");
+                }else if (productprice.isEmpty() & storyContent.isEmpty()){
+                    productPrice.setError("This cannot be empty!");
+                    reviewDet.setError("This cannot be empty");
+                }else if (productname.isEmpty()){
+                    productName.setError("This cannot be empty!");
+                }else if (productprice.isEmpty()){
+                    productPrice.setError("This cannot be empty!");
+                }else if (storyContent.isEmpty()){
+                    reviewDet.setError("This cannot be empty");
                 }
             }
         });
