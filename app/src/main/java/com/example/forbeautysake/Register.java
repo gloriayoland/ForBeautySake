@@ -142,9 +142,12 @@ public class Register extends AppCompatActivity {
             private Boolean validateFullname(){
                 String val = fullname.getEditText().getText().toString();
                 Boolean boolVal = false;
+                String noNumber = "b[^\\d\\W]+\\b/g";
 
                 if(val.isEmpty()){
                     fullname.setError("Field cannot be empty!");
+                }else if (!val.matches(noNumber)){
+                    fullname.setError("Full name can't use number!");
                 }else{
                     fullname.setError(null);
                     fullname.setErrorEnabled(false);
